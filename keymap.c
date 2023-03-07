@@ -22,11 +22,17 @@
 
 enum planck_layers {
   _DVORAK,
+  _RAISE,
+  _LOWER,
+  _ADJUST,
   _L1
 };
 
 enum planck_keycodes {
   DVORAK = SAFE_RANGE,
+  RAISE,
+  LOWER,
+  ADJUST,
   L1
 };
 
@@ -51,14 +57,35 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_A,     KC_O,    MT(MOD_LALT,KC_E),MT(MOD_LGUI, KC_U),KC_I,    KC_NO,    KC_NO,    KC_D,    MT(MOD_RGUI,KC_H),MT(MOD_RALT,KC_T),KC_N,    KC_S,
     KC_SCLN,  KC_Q,    KC_J,             KC_K,              KC_X,    KC_NO,    KC_NO,    KC_B,    KC_M,             KC_W,             KC_V,    KC_Z ,
 
-    BACKLIT,  KC_NO,   KC_NO,   MT(MOD_MEH,KC_SPACE),OSM(MOD_LSFT),   KC_BSPC,    KC_BSPC,    OSM(MOD_RCTL),   TO(L1), KC_NO, KC_NO,   KC_NO
+    KC_NO,  KC_NO,   KC_NO,   MT(MOD_MEH,KC_SPACE),OSM(MOD_LSFT),   KC_BSPC,    KC_BSPC,    OSM(MOD_RCTL),   TO(L1), KC_NO, KC_NO,   KC_NO
+),
+[_RAISE] = LAYOUT_planck_grid(
+    KC_QUOT,  KC_COMM, KC_DOT,           KC_P,              KC_Y,    KC_NO,    KC_NO,    KC_F,    KC_G,             KC_C,             KC_R,    KC_L,
+    KC_A,     KC_O,    MT(MOD_LALT,KC_E),MT(MOD_LGUI, KC_U),KC_I,    KC_NO,    KC_NO,    KC_D,    MT(MOD_RGUI,KC_H),MT(MOD_RALT,KC_T),KC_N,    KC_S,
+    KC_SCLN,  KC_Q,    KC_J,             KC_K,              KC_X,    KC_NO,    KC_NO,    KC_B,    KC_M,             KC_W,             KC_V,    KC_Z ,
+
+    KC_NO,  KC_NO,   KC_NO,   MT(MOD_MEH,KC_SPACE),OSM(MOD_LSFT),   KC_BSPC,    KC_BSPC,    OSM(MOD_RCTL),   TO(L1), KC_NO, KC_NO,   KC_NO
+),
+[_LOWER] = LAYOUT_planck_grid(
+    KC_QUOT,  KC_COMM, KC_DOT,           KC_P,              KC_Y,    KC_NO,    KC_NO,    KC_F,    KC_G,             KC_C,             KC_R,    KC_L,
+    KC_A,     KC_O,    MT(MOD_LALT,KC_E),MT(MOD_LGUI, KC_U),KC_I,    KC_NO,    KC_NO,    KC_D,    MT(MOD_RGUI,KC_H),MT(MOD_RALT,KC_T),KC_N,    KC_S,
+    KC_SCLN,  KC_Q,    KC_J,             KC_K,              KC_X,    KC_NO,    KC_NO,    KC_B,    KC_M,             KC_W,             KC_V,    KC_Z ,
+
+    KC_NO,  KC_NO,   KC_NO,   MT(MOD_MEH,KC_SPACE),OSM(MOD_LSFT),   KC_BSPC,    KC_BSPC,    OSM(MOD_RCTL),   TO(L1), KC_NO, KC_NO,   KC_NO
+),
+[_ADJUST] = LAYOUT_planck_grid(
+    KC_QUOT,  KC_COMM, KC_DOT,           KC_P,              KC_Y,    KC_NO,    KC_NO,    KC_F,    KC_G,             KC_C,             KC_R,    KC_L,
+    KC_A,     KC_O,    MT(MOD_LALT,KC_E),MT(MOD_LGUI, KC_U),KC_I,    KC_NO,    KC_NO,    KC_D,    MT(MOD_RGUI,KC_H),MT(MOD_RALT,KC_T),KC_N,    KC_S,
+    KC_SCLN,  KC_Q,    KC_J,             KC_K,              KC_X,    KC_NO,    KC_NO,    KC_B,    KC_M,             KC_W,             KC_V,    KC_Z ,
+
+    KC_NO,  KC_NO,   KC_NO,   MT(MOD_MEH,KC_SPACE),OSM(MOD_LSFT),   KC_BSPC,    KC_BSPC,    OSM(MOD_RCTL),   TO(L1), KC_NO, KC_NO,   KC_NO
 ),
 
 [_L1] = LAYOUT_planck_grid(
     KC_QUOT,  KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_NO,    KC_NO,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,
     KC_A,     KC_O,    KC_E,    KC_U,    KC_I,    KC_NO,    KC_NO,    KC_D,    KC_D,    KC_T,    KC_N,    KC_S,
     KC_SCLN,  KC_Q,    KC_J,    KC_K,    KC_X,    KC_NO,    KC_NO,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z ,
-    BACKLIT,  KC_NO,   KC_LALT, KC_LGUI, LOWER,   KC_NO,    KC_NO,    RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
+    KC_NO,  KC_NO,   KC_LALT, KC_LGUI, LOWER,   KC_NO,    KC_NO,    RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
 ),
 
 
@@ -77,67 +104,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case QWERTY:
-      if (record->event.pressed) {
-        print("mode just switched to qwerty and this is a huge string\n");
-        set_single_persistent_default_layer(_QWERTY);
-      }
-      return false;
-      break;
-    case COLEMAK:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(_COLEMAK);
-      }
-      return false;
-      break;
     case DVORAK:
       if (record->event.pressed) {
         set_single_persistent_default_layer(_DVORAK);
-      }
-      return false;
-      break;
-    case BACKLIT:
-      if (record->event.pressed) {
-        register_code(KC_RSFT);
-        #ifdef BACKLIGHT_ENABLE
-          backlight_step();
-        #endif
-        #ifdef KEYBOARD_planck_rev5
-          writePinLow(E6);
-        #endif
-      } else {
-        unregister_code(KC_RSFT);
-        #ifdef KEYBOARD_planck_rev5
-          writePinHigh(E6);
-        #endif
-      }
-      return false;
-      break;
-    case PLOVER:
-      if (record->event.pressed) {
-        #ifdef AUDIO_ENABLE
-          stop_all_notes();
-          PLAY_SONG(plover_song);
-        #endif
-        layer_off(_RAISE);
-        layer_off(_LOWER);
-        layer_off(_ADJUST);
-        layer_on(_PLOVER);
-        if (!eeconfig_is_enabled()) {
-            eeconfig_init();
-        }
-        keymap_config.raw = eeconfig_read_keymap();
-        keymap_config.nkro = 1;
-        eeconfig_update_keymap(keymap_config.raw);
-      }
-      return false;
-      break;
-    case EXT_PLV:
-      if (record->event.pressed) {
-        #ifdef AUDIO_ENABLE
-          PLAY_SONG(plover_gb_song);
-        #endif
-        layer_off(_PLOVER);
       }
       return false;
       break;
